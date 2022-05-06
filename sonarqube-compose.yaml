@@ -1,0 +1,44 @@
+version: "3.8"
+
+volumes:
+  sonardata-vol:
+  sonarlogs-vol:
+  sonarext-vol:
+  postgres-vol:
+
+networks:
+  sonarqube_net:
+
+services:
+  sonarqube:
+    image: sonarqube:9-community
+    restart: on-failure
+    ports:
+      - 9000:9000
+    volumes:
+      - sonardata-vol:/opt/sonarqube/data
+      - sonarlogs-vol:/opt/sonarqube/logs
+      - sonarext-vol:/opt/sonarqube/extensions
+    networks:
+      - sonarqube_net
+    environment:
+      - sonar.jdbc.username=sonar
+      - sonar.jdbc.password=sonar
+      - sonar.jdbc.url=jdbc:postgresql://postgres/sonar
+    deploy:
+      resources:
+        reservations:
+          memory: 524288kb
+
+  postgres:
+    image: postgres:14.2
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-vol:/var/lib/postgresql/data
+    networks:
+      - sonarqube_net
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonar
