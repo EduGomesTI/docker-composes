@@ -25,10 +25,7 @@ services:
       - sonar.jdbc.username=sonar
       - sonar.jdbc.password=sonar
       - sonar.jdbc.url=jdbc:postgresql://postgres/sonar
-    deploy:
-      resources:
-        reservations:
-          memory: 524288kb
+    mem_limit: 1073741824b
 
   postgres:
     image: postgres:14.2
