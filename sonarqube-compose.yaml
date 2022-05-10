@@ -25,7 +25,7 @@ services:
       - sonar.jdbc.username=sonar
       - sonar.jdbc.password=sonar
       - sonar.jdbc.url=jdbc:postgresql://postgres/sonar
-    mem_limit: 1073741824b
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
 
   postgres:
     image: postgres:14.2
