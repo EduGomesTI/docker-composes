@@ -1,0 +1,15 @@
+version: "3.8"
+
+volumes:
+  mongodb_vol:
+
+services:
+  mongodb:
+    image: mongo:5.0
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_vol:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongouser
+      - MONGO_INITDB_ROOT_PASSWORD=mongopwd
