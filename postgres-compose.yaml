@@ -1,0 +1,21 @@
+version: "3.9"
+
+volumes:
+  postgres_vol:
+
+networks:
+  postgres_net:
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_vol:/var/lib/postgresql/data
+    networks:
+      - postgres_net
+    environment:
+      - POSTGRES_PASSWORD=S3cret
+      - POSTGRES_USER=user
+      - POSTGRES_DB=dev_db

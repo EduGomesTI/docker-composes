@@ -1,0 +1,22 @@
+version: "3.9"
+
+volumes:
+  mysql_vol:
+
+networks:
+  mysqql_net:
+
+services:
+  mysql:
+    image: mysql:8
+    ports:
+      - 3306:3306
+    volumes:
+      - mysqql_vol:/var/lib/mysql
+    networks:
+      - mysqql_net
+    environment:
+      - MYSQL_ROOT_PASSWORD=S3cret
+      - MYSQL_PASSWORD=An0thrS3crt
+      - MYSQL_USER=citizix_user
+      - MYSQL_DATABASE=citizix_db

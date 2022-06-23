@@ -3,6 +3,9 @@ version: "3.8"
 volumes:
   mongodb_vol:
 
+networks:
+  mongo_net:
+
 services:
   mongodb:
     image: mongo:5.0
@@ -10,6 +13,8 @@ services:
       - 27017:27017
     volumes:
       - mongodb_vol:/data/db
+    networks:
+      - mongo_net
     environment:
       - MONGO_INITDB_ROOT_USERNAME=mongouser
       - MONGO_INITDB_ROOT_PASSWORD=mongopwd
