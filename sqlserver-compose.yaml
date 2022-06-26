@@ -13,7 +13,8 @@ services:
       - 1433:1433
     volumes:
       - sqlserver_vol:/var/lib/mssqlql/data
-    networks: sqlserver_net
+    networks:
+      - sqlserver_net
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=mssql1Ipw
