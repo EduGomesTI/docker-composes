@@ -7,7 +7,9 @@ Para iniciar: docker-compose -f sonarqube-compose.yaml up -d
 Para parar: docker-compose -f sonarqube-compose.yaml down
 
 localhost:9000
+
 Login: admin
+
 Senha: admin
 
 ## MongoDB
@@ -25,7 +27,9 @@ Para iniciar: docker-compose -f sqlserver-compose.yaml up -d
 Para parar: docker-compose -f sqlserver-compose.yaml down
 
 localhost:1433
+
 Login: SA
+
 Senha: mssql1Ipw
 
 ## Postgres
@@ -35,4 +39,5 @@ Para iniciar: docker-compose -f postgres-compose.yaml up -d
 Para parar: docker-compose -f postgres-compose.yaml down
 
 login: user
+
 Senha: S3cret
