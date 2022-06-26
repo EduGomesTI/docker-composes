@@ -1,8 +1,5 @@
 version: "3.9"
 
-volumes:
-  sqlserver_vol:
-
 networks:
   sqlserver_net:
 
@@ -12,7 +9,7 @@ services:
     ports:
       - 1433:1433
     volumes:
-      - sqlserver_vol:/var/lib/mssqlql/data
+      - ~/apps/mssql/data:/var/lib/mssqlql/data
     networks:
       - sqlserver_net
     environment:
