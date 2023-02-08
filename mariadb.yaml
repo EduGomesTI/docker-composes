@@ -1,0 +1,25 @@
+version: "3.9"
+
+networks:
+  mariadb_net:
+
+volumes:
+  mariadb_vol:
+
+#MySql
+services:
+  mariadb:
+    image: mariadb:10.5.17
+    container_name: mariadb
+    ports:
+      - 3306:3306
+    volumes:
+      - mariadb_vol:/var/lib/mysql
+    networks:
+      - mariadb_net
+    environment:
+      - MARIADB_ROOT_PASSWORD=1234
+      - MARIADB_PASSWORD=1234
+      - MARIADB_USER=user
+      - MARIADB_DATABASE=click
+      - max-allowed-packet=445878

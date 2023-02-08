@@ -1,0 +1,37 @@
+version: '3'
+
+volumes:
+  sqlite_vol:
+
+networks:
+  sqlite_net:
+
+services:
+  sqlite3:
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    ports:
+      - '9000:9000' # expose ports - HOST:CONTAINER
+    restart: unless-stopped
+    volumes:
+      - sqlite_vol:/root/db/
+    networks:
+      - sqlite_net
+
+  sqlitebrowser:
+    image: lscr.io/linuxserver/sqlitebrowser:latest
+    container_name: sqlitebrowser
+    security_opt:
+      - seccomp:unconfined #optional
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    volumes:
+      - sqlite_vol:/config
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    networks:
+      - sqlite_net

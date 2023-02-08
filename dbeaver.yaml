@@ -1,0 +1,19 @@
+version: "3.9"
+
+networks:
+  dbeaver_net:
+
+volumes:
+  dbeaver_vol:
+
+services:
+  dbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: dbeaver
+    restart: always
+    ports:
+      - 8978:8978
+    volumes:
+      - dbeaver_vol:/opt/cloudbeaver/workspace
+    networks:
+      - dbeaver_net
