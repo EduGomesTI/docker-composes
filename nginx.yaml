@@ -1,0 +1,22 @@
+version: '3'
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.6.0.0/16
+          gateway: 10.6.0.1
+
+volumes:
+  nginx_vol:
+
+services:
+	nginx:
+    image: nginx:latest
+    container_name: local_nginx
+    volumes:
+       - ./configs/reverse_proxy.conf:/etc/nginx/nginx.conf
+    ports:
+       - 8080:8080
+    networks:
+       vpcbr:

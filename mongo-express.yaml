@@ -1,0 +1,24 @@
+version: "3.8"
+
+networks:
+  mongo_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.238.0/24"
+
+services:
+  mongo-express:
+      image: mongo-express
+      ports:
+        - 8081:8081
+      environment:
+        ME_CONFIG_BASICAUTH_USERNAME: eduardo
+        ME_CONFIG_BASICAUTH_PASSWORD: "1234"
+        ME_CONFIG_MONGODB_PORT: 27017
+        ME_CONFIG_MONGODB_ADMINUSERNAME: root
+        ME_CONFIG_MONGODB_ADMINPASSWORD: "1234"
+        ME_CONFIG_MONGODB_SERVER: 172.16.238.10
+      networks:
+        mongo_net:
+          ipv4_address: 172.16.238.20

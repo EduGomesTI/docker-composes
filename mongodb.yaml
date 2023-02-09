@@ -5,16 +5,45 @@ volumes:
 
 networks:
   mongo_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.238.0/24"
 
 services:
   mongodb:
-    image: mongo:5.0
+    image: mongo:6.0
     ports:
       - 27017:27017
     volumes:
       - mongodb_vol:/data/db
     networks:
-      - mongo_net
+      mongo_net:
+        ipv4_address: 172.16.238.10
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=mongouser
-      - MONGO_INITDB_ROOT_PASSWORD=mongopwd
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=1234
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  mongo-express:
+      image: mongo-express
+      ports:
+        - 8081:8081
+      environment:
+        ME_CONFIG_BASICAUTH_USERNAME: eduardo
+        ME_CONFIG_BASICAUTH_PASSWORD: "1234"
+        ME_CONFIG_MONGODB_PORT: 27017
+        ME_CONFIG_MONGODB_ADMINUSERNAME: root
+        ME_CONFIG_MONGODB_ADMINPASSWORD: "1234"
+        ME_CONFIG_MONGODB_SERVER: 172.16.238.10
+      networks:
+        mongo_net:
+          ipv4_address: 172.16.238.20
+      depends_on:
+        mongodb:
+          condition: service_healthy
