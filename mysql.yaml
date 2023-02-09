@@ -4,7 +4,11 @@ volumes:
   mysql_vol:
 
 networks:
-  mysqql_net:
+  mysql_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.2.0/24"
 
 services:
   mysql:
@@ -12,11 +16,30 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - mysqql_vol:/var/lib/mysql
+      - mysql_vol:/var/lib/mysql
     networks:
-      - mysqql_net
+      mysql_net:
+        ipv4_address: 172.16.2.10
     environment:
       - MYSQL_ROOT_PASSWORD=1234
       - MYSQL_PASSWORD=1234
       - MYSQL_USER=user
       - MYSQL_DATABASE=user_db
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        timeout: 20s
+        retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARY=1
+    networks:
+      mysql_net:
+        ipv4_address: 172.16.2.20
+    depends_on:
+      mysql:
+        condition: service_healthy

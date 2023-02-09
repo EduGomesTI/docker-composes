@@ -1,0 +1,104 @@
+version: "3.8"
+
+volumes:
+  mongodb_vol:
+  dbeaver_vol:
+  mysql_vol:
+
+networks:
+  mongo_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.1.0/24"
+  mysql_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.2.0/24"
+
+services:
+  mongodb:
+    image: mongo:6.0
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_vol:/data/db
+    networks:
+      mongo_net:
+        ipv4_address: 172.16.1.10
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=1234
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  mongo-express:
+      image: mongo-express
+      ports:
+        - 8081:8081
+      environment:
+        ME_CONFIG_BASICAUTH_USERNAME: eduardo
+        ME_CONFIG_BASICAUTH_PASSWORD: "1234"
+        ME_CONFIG_MONGODB_PORT: 27017
+        ME_CONFIG_MONGODB_ADMINUSERNAME: root
+        ME_CONFIG_MONGODB_ADMINPASSWORD: "1234"
+        ME_CONFIG_MONGODB_SERVER: 172.16.1.10
+      networks:
+        mongo_net:
+          ipv4_address: 172.16.1.20
+      depends_on:
+        mongodb:
+          condition: service_healthy
+
+  dbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: dbeaver
+    restart: always
+    ports:
+      - 8978:8978
+    volumes:
+      - dbeaver_vol:/opt/cloudbeaver/workspace
+    networks:
+      mysql_net:
+        ipv4_address: 172.16.2.10
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARY=1
+    networks:
+      mysql_net:
+        ipv4_address: 172.16.2.20
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_vol:/var/lib/mysql
+    networks:
+      mysql_net:
+        ipv4_address: 172.16.2.30
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_PASSWORD=1234
+      - MYSQL_USER=user
+      - MYSQL_DATABASE=user_db
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        timeout: 20s
+        retries: 10

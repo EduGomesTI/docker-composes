@@ -1,0 +1,61 @@
+version: "3.9"
+
+volumes:
+  mysql_vol:
+  dbeaver_vol:
+  rabbitmq_data_vol:
+  rabbitmq_log_vol:
+
+
+networks:
+  mysql_net:
+  rabbitmq_net:
+
+
+services:
+  mysql:
+    image: mysql:8
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_vol:/var/lib/mysql
+    networks:
+      - mysql_net
+    hostname: hostmysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_PASSWORD=1234
+      - MYSQL_USER=user
+      - MYSQL_DATABASE=b3
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  dbeaver:
+    image: dbeaver/cloudbeaver:latest
+    restart: always
+    ports:
+      - 8978:8978
+    volumes:
+      - dbeaver_vol:/opt/cloudbeaver/workspace
+    networks:
+      - mysql_net
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    restart: always
+    hostname: hostrabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq_data_vol:/var/lib/rabbitmq/
+      - rabbitmq_log_vol:/var/log/rabbitmq
+    networks:
+      - rabbitmq_net

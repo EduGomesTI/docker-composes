@@ -1,8 +1,5 @@
 version: "3.9"
 
-networks:
-  sqlserver_net:
-
 volumes:
   sqlserver_system:
   sqlserver_data:
@@ -15,8 +12,6 @@ services:
     volumes:
       - sqlserver_system:/var/opt/mssql
       - sqlserver_data:/var/opt/sqlserver
-    networks:
-      - sqlserver_net
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=mssql1Ipw
